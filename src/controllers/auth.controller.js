@@ -45,7 +45,7 @@ exports.loginUser = async (req, res, next) => {
       message: "You have loggedin successfully",
       data: {
         token,
-        userId: user._id,
+        user,
       },
     });
   } catch (error) {
@@ -57,6 +57,12 @@ exports.loginUser = async (req, res, next) => {
 
 exports.registerUser = async (req, res, next) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      next({ status: 422, message: "user input error", data: errors.mapped() });
+      return;
+    }
+
     let { email, password, name } = req.body;
 
     // check duplicate email
@@ -104,6 +110,25 @@ exports.fetchCurrentUser = async (req, res, next) => {
       message: "fetch current user",
       data: {
         user: currentUser,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.logoutUser = async (req, res, next) => {
+  try {
+    const currentUser = res.locals.user;
+    const user = await User.findById(currentUser._id);
+    user.isActive = false;
+    user.lastSeen = new Date().toISOString();
+    await user.save();
+    return res.status(200).json({
+      type: "success",
+      message: "You have loggedout successfully",
+      data: {
+        user,
       },
     });
   } catch (error) {

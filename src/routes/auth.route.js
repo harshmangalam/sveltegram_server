@@ -8,15 +8,17 @@ const {
   fetchCurrentUser,
   loginUser,
   registerUser,
+  logoutUser,
 } = require("../controllers/auth.controller");
 
 const loginValidation = [
-  body("email").not().isEmpty().withMessage("email/phone must be required"),
+  body("email").not().isEmpty().withMessage("email must be required"),
   body("password").not().isEmpty().withMessage("Password must be required"),
 ];
 
 const registerValidation = [
   body("name").not().isEmpty().withMessage("Name must be required"),
+  body("password").not().isEmpty().withMessage("Password must be required"),
   body("email")
     .not()
     .isEmpty()
@@ -31,4 +33,5 @@ router.post("/login", loginValidation, loginUser);
 
 router.get("/me", checkAuth, fetchCurrentUser);
 
+router.get("/logout", checkAuth, logoutUser);
 module.exports = router;

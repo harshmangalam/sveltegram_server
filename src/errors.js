@@ -23,3 +23,6 @@ exports.INCORRECT_PASSWORD_ERR = "Password is incorrect";
 exports.ACCESS_DENIED_ERR = "You have not access to perform this action.";
 
 
+exports.POST_NOT_FOUND = "Post not found"
+exports.POST_NOT_LIKED = "Yet you have not like the post"
+exports.POST_ALREADY_LIKED  = "Post already liked by you"

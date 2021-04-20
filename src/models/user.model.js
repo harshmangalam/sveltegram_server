@@ -27,6 +27,27 @@ const userSchema = new Schema(
       type: String,
       trim: true,
     },
+
+    followers: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    followings: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    isActive: {
+      type: Boolean,
+      default: false,
+    },
+
+    lastSeen: {
+      type: Date,
+    },
   },
   { timestamps: true }
 );
