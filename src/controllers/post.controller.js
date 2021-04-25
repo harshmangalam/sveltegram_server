@@ -10,21 +10,60 @@ const {
 
 exports.getAllPosts = async (req, res, next) => {
   try {
-    let { page = 0, limit = 5 } = req.query;
+    let { page, limit } = req.query;
+    page = parseInt(page);
+    limit = parseInt(limit);
 
     const posts = await Post.find()
+      .sort("-createdAt")
+      .limit(limit)
+      .skip(limit * page)
       .populate("user", "-password")
-      .populate("likes", "name profilePic")
-      .limit(parseInt(limit))
-      .skip(parseInt(limit) * parseInt(page))
-
-      .sort("-createdAt");
+      .populate("likes", "name profilePic");
+    const totalPosts = await Post.estimatedDocumentCount();
 
     return res.status(200).json({
       type: "success",
       message: "fetch all posts",
       data: {
         posts,
+        pagination: {
+          totalPosts,
+          totalPage: Math.ceil(totalPosts / limit),
+        },
+      },
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+exports.explorePosts = async (req, res, next) => {
+  try {
+    const currentUser = res.locals.user;
+    let { page, limit } = req.query;
+    page = parseInt(page);
+    limit = parseInt(limit);
+
+    console.log("followings", currentUser.followings);
+
+    const posts = await Post.find()
+      .sort("-createdAt")
+      .limit(limit)
+      .skip(limit * page)
+      .populate("user", "-password")
+      .populate("likes", "name profilePic");
+    const totalPosts = await Post.estimatedDocumentCount();
+
+    return res.status(200).json({
+      type: "success",
+      message: "fetch all posts",
+      data: {
+        posts,
+        pagination: {
+          totalPosts,
+          totalPage: Math.ceil(totalPosts / limit),
+        },
       },
     });
   } catch (error) {

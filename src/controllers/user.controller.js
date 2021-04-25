@@ -27,11 +27,19 @@ exports.getUserById = async (req, res, next) => {
 exports.getAllUsers = async (req, res, next) => {
   try {
     const { limit = 5, page = 0 } = req.query;
-    const users = await User.find()
-      .populate("followers", "name profilePic")
-      .populate("followings", "name profilePic")
-      .limit(parseInt(limit))
-      .skip(parseInt(limit) * parseInt(page));
+    let users;
+
+    if (req.query.search) {
+      users = await User.find({ $text: { $search: req.query.search } })
+        .populate("followers", "name profilePic")
+        .populate("followings", "name profilePic");
+    } else {
+      users = await User.find()
+        .populate("followers", "name profilePic")
+        .populate("followings", "name profilePic")
+        .limit(parseInt(limit))
+        .skip(parseInt(limit) * parseInt(page));
+    }
 
     return res.status(200).json({
       type: "success",

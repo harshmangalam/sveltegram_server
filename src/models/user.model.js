@@ -52,4 +52,5 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
+userSchema.index({ "$**": "text" });
 module.exports = model("User", userSchema);
