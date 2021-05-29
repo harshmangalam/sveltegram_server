@@ -26,8 +26,7 @@ exports.getUserById = async (req, res, next) => {
 
 exports.getAllUsers = async (req, res, next) => {
   try {
-    const limit = req.query.limit
-    const page = req.query.page
+   
     let users;
 
     if (req.query.search) {
@@ -38,8 +37,7 @@ exports.getAllUsers = async (req, res, next) => {
       users = await User.find()
         .populate("followers", "name profilePic")
         .populate("followings", "name profilePic")
-        .limit(parseInt(limit))
-        .skip(parseInt(limit) * parseInt(page));
+       
     }
 
     return res.status(200).json({
