@@ -26,7 +26,8 @@ exports.getUserById = async (req, res, next) => {
 
 exports.getAllUsers = async (req, res, next) => {
   try {
-    const { limit = 5, page = 0 } = req.query;
+    const limit = req.query.limit
+    const page = req.query.page
     let users;
 
     if (req.query.search) {
